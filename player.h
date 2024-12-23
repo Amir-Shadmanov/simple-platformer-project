@@ -40,8 +40,19 @@ void update_player() {
         player_score+=10;
         PlaySound(coin_sound);
     }
+    if (is_colliding(player_pos, ENEMY)) {
+        game_state = GAME_OVER_STATE;
+    }
     if (is_colliding(player_pos, EXIT)) {
         // TODO
+        if (is_colliding(player_pos, EXIT)) {
+            if (level_index == LEVEL_COUNT - 1) {
+                game_state = VICTORY_STATE;
+            } else {
+                load_level(1);
+                PlaySound(exit_sound);
+            }
+        }
 
     }
 }

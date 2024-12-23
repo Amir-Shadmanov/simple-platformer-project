@@ -27,9 +27,6 @@
     "name" : "qoi",
     "version>=" : "2023-08-10"
   }, {
-    "name" : "raylib",
-    "version>=" : "5.0#2"
-  }, {
     "name" : "stb",
     "version>=" : "2024-07-29#1"
   }, {
@@ -38,5 +35,8 @@
   }, {
     "name" : "vcpkg-cmake",
     "version>=" : "2024-04-23"
+  }, {
+    "name" : "raylib",
+    "version>=" : "5.0#2"
   } ]
 }

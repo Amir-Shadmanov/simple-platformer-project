@@ -25,16 +25,30 @@ void derive_graphics_metrics_from_loaded_level() {
         screen_size.x,
         screen_size.y
     ) / SCREEN_SCALE_DIVISOR;
+
     float level_width  = static_cast<float>(current_level.columns) * cell_size;
-    float level_height = static_cast<float>(current_level.rows)    * cell_size;
+    float level_height = static_cast<float>(current_level.rows) * cell_size;
     shift_to_center.x = (screen_size.x - level_width) * 0.5f;
     shift_to_center.y = (screen_size.y - level_height) * 0.5f;
 }
 
 void draw_menu() {
-    draw_text(game_title);
-    draw_text(game_subtitle);
+    // Clear the screen with a black background
+    ClearBackground(BLACK);
+
+    // Draw the title text at the center of the screen
+    DrawText("DUNGEON MASTER",
+             GetScreenWidth() / 2 - MeasureText("DUNGEON MASTER", 40) / 2,
+             GetScreenHeight() / 4,
+             40, RED);
+
+    // Draw the instruction text slightly below the title
+    DrawText("Press Enter to start your Gacha Journey",
+             GetScreenWidth() / 2 - MeasureText("Press Enter to start your Gacha Journey", 20) / 2,
+             GetScreenHeight() / 2,
+             20, WHITE);
 }
+
 
 void draw_game_overlay() {
     Text score = {
@@ -56,15 +70,15 @@ void draw_game_overlay() {
 void draw_level() {
     for (size_t row = 0; row < current_level.rows; ++row) {
         for (size_t column = 0; column < current_level.columns; ++column) {
-
             Vector2 pos = {
-                    shift_to_center.x + static_cast<float>(column) * cell_size,
-                    shift_to_center.y + static_cast<float>(row) * cell_size
+                shift_to_center.x + static_cast<float>(column) * cell_size,
+                shift_to_center.y + static_cast<float>(row) * cell_size
             };
 
             char cell = current_level.data[row * current_level.columns + column];
             // The first image layer
             switch (cell) {
+                case ENEMY:
                 case AIR:
                 case PLAYER:
                 case COIN:
@@ -77,6 +91,9 @@ void draw_level() {
             }
             // The second image layer
             switch (cell) {
+                case ENEMY:
+                    draw_sprite(enemy_sprite, pos, cell_size);
+                    break;
                 case COIN:
                     draw_sprite(coin_sprite, pos, cell_size);
                     break;
@@ -111,15 +128,15 @@ void create_victory_menu_background() {
         ball.y  = rand_up_to(screen_size.y);
         ball.dx = rand_from_to(-VICTORY_BALL_MAX_SPEED, VICTORY_BALL_MAX_SPEED);
         ball.dx *= screen_scale;
-        if (abs(ball.dx) < 0E-1) ball.dx = 1.0f;
+        if (abs(ball.dx) < 0.1f) ball.dx = 1.0f;
         ball.dy = rand_from_to(-VICTORY_BALL_MAX_SPEED, VICTORY_BALL_MAX_SPEED);
         ball.dy *= screen_scale;
-        if (abs(ball.dy) < 0E-1) ball.dy = 1.0f;
+        if (abs(ball.dy) < 0.1f) ball.dy = 1.0f;
         ball.radius = rand_from_to(VICTORY_BALL_MIN_RADIUS, VICTORY_BALL_MAX_RADIUS);
         ball.radius *= screen_scale;
     }
 
-    /* Clear both the front buffer and the back buffer to avoid ghosting of the game graphics. */
+    // Clear both the front buffer and the back buffer to avoid ghosting of the game graphics.
     ClearBackground(BLACK);
     EndDrawing();
     BeginDrawing();
@@ -147,6 +164,16 @@ void draw_victory_menu_background() {
     for (auto &ball : victory_balls) {
         DrawCircleV({ ball.x, ball.y }, ball.radius, VICTORY_BALL_COLOR);
     }
+}
+void draw_game_over_menu() {
+    DrawRectangle(
+        0, 0,
+        static_cast<int>(screen_size.x), static_cast<int>(screen_size.y),
+        { 0, 0, 0, VICTORY_BALL_TRAIL_TRANSPARENCY }
+    );
+    ClearBackground(BLACK);
+    DrawText("Game Over", 400, 250, 40, RED);
+    DrawText("Press Space to Return to the menu", 300, 350, 20,WHITE);
 }
 
 void draw_victory_menu() {

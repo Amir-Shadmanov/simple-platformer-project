@@ -41,8 +41,8 @@ void load_level(int offset) {
 
     if (level_index >= LEVEL_COUNT) {
         // TODO
-        // create_victory_menu_background();
-        // level_index = 0;
+         create_victory_menu_background();
+         level_index = 0;
         return;
     }
 
@@ -64,6 +64,13 @@ void load_level(int offset) {
 
 void unload_level() {
     delete[] current_level_data;
+}
+void reset_game() {
+    level_index = 0;
+    load_level(0);
+    spawn_player();
+    player_score = 0;
+    game_state = MENU_STATE;
 }
 
 #endif // LEVEL_H
